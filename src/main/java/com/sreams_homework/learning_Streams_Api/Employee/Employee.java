@@ -1,7 +1,5 @@
 package com.sreams_homework.learning_Streams_Api.Employee;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.capitalize;
@@ -58,6 +56,7 @@ public class Employee {
                 && Objects.equals(department, employee.department)
                 && Objects.equals(salary, employee.salary);
     }
+
     @Override
     public int hashCode() {
         return java.util.Objects.hash(lastName);

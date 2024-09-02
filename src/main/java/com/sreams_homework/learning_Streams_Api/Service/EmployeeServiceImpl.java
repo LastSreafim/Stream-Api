@@ -5,6 +5,7 @@ import com.sreams_homework.learning_Streams_Api.Exceptions.EmployeeAlreadyAddedE
 import com.sreams_homework.learning_Streams_Api.Exceptions.EmployeeNotFoundException;
 import com.sreams_homework.learning_Streams_Api.Exceptions.EmployeeStorageIsFullException;
 import com.sreams_homework.learning_Streams_Api.Exceptions.WrongFormatException;
+import com.sreams_homework.learning_Streams_Api.valueForTesting.EmployeeValueGenerator;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,18 @@ import java.util.Map;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+    private EmployeeValueGenerator employeeValueGenerator;
 
     private final String simbols = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
 
-    private final int maxEmployee = 99;
+    private final int maxEmployee = 10;
 
     private final Map<String, Employee> employees = new HashMap<>();
+
+    public EmployeeServiceImpl(EmployeeValueGenerator employeeValueGenerator) {
+        this.employeeValueGenerator = employeeValueGenerator;
+    }
+
     @PostConstruct
     private void init() {
         addEmployee("Иванов", "Иван", 2, 50_000);
@@ -51,8 +58,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public void check(String lastName, String firstName, int department, double salary) {
-        if (salary < 0) {
-            throw new WrongFormatException("ЗП не может быть отрицательной");
+        if (salary <= 0) {
+            throw new WrongFormatException("ЗП не может быть отрицательной или равнятья нулю");
         }
         if (department < 1 || department > 5) {
             throw new WrongFormatException("департамент должен быть от 1 до 5");
@@ -75,6 +82,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees.put(key, employee);
         return employee;
     }
+
+//    public void addEmployeeByGenerator() {
+//        Employee employee = new Employee(employeeValueGenerator.getRandomLastName(),
+//                employeeValueGenerator.getRandomFirstName(),
+//                employeeValueGenerator.generateDepartment(),
+//                employeeValueGenerator.generateSalary());
+//        String key = buildKey(employee.getLastName(), employee.getFirstName());
+//
+//        employees.put(key, employee);
+//    }
 
     @Override
     public Employee removeEmployee(String lastName, String firstName) {
