@@ -1,6 +1,7 @@
 package com.sreams_homework.learning_Streams_Api.Service;
 
 import com.sreams_homework.learning_Streams_Api.Employee.Employee;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class DepartmentServiceImpl implements DepartmentService {
     private final EmployeeService employeeService;
 
+    @Autowired
     public DepartmentServiceImpl(EmployeeService employeeServiceImpl) {
         this.employeeService = employeeServiceImpl;
     }
@@ -45,8 +47,20 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Map<Integer, List<Employee>> allEmployeesDepartments() {
+    public Double calculateAllSalaryByDepartment(int department) {
+
         return employeeService.getEmployees().stream()
-                .collect(groupingBy(Employee::getDepartment));
+                .filter(emp -> emp.getDepartment() == department)
+                .mapToDouble(Employee::getSalary).sum();
+    }
+
+    @Override
+    public Map<Integer, List<Employee>> allEmployeesDepartments() {
+        if (employeeService.getEmployees()!= null){
+
+            return employeeService.getEmployees().stream()
+                    .collect(groupingBy(Employee::getDepartment));
+        }
+        throw new EmployeeNotFoundException();
     }
 }
